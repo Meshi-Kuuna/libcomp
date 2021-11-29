@@ -27,6 +27,7 @@
 #include "MessagePacket.h"
 
 // libcomp Includes
+#include "BaseScriptEngine.h"
 #include "TcpConnection.h"
 
 using namespace libcomp;
@@ -65,3 +66,30 @@ libcomp::String Message::Packet::Dump() const {
         .Arg(mPacket.Dump());
   }
 }
+
+void libcomp::Message::Packet::ExecuteScriptFunction(
+    Sqrat::Function& func) const {
+  func.Execute(std::make_shared<libcomp::Message::Packet>(*this));
+}
+
+namespace libcomp {
+template <>
+BaseScriptEngine& BaseScriptEngine::Using<Message::Packet>() {
+  if (!BindingExists("Message.Packet")) {
+    Using<Message::Message>();
+
+    Sqrat::DerivedClass<Message::Packet, Message::Message> binding(
+        mVM, "Message.Packet");
+    Bind("Message.Packet", binding);
+
+    binding.Func("GetPacket", &Message::Packet::GetPacket)
+        .Prop("Packet", &Message::Packet::GetPacket)
+        .Func("GetCommandCode", &Message::Packet::GetCommandCode)
+        .Prop("CommandCode", &Message::Packet::GetCommandCode)
+        .Func("GetConnection", &Message::Packet::GetConnection)
+        .Prop("Connection", &Message::Packet::GetConnection);
+  }
+
+  return *this;
+}
+}  // namespace libcomp

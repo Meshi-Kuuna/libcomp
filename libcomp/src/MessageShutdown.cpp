@@ -26,6 +26,8 @@
 
 #include "MessageShutdown.h"
 
+#include "BaseScriptEngine.h"
+
 using namespace libcomp;
 
 Message::Shutdown::Shutdown() {}
@@ -37,3 +39,23 @@ Message::MessageType Message::Shutdown::GetType() const {
 }
 
 libcomp::String Message::Shutdown::Dump() const { return "Message: Shutdown"; }
+
+void libcomp::Message::Shutdown::ExecuteScriptFunction(
+    Sqrat::Function &func) const {
+  func.Execute(std::make_shared<libcomp::Message::Shutdown>(*this));
+}
+
+namespace libcomp {
+template <>
+BaseScriptEngine &BaseScriptEngine::Using<Message::Shutdown>() {
+  if (!BindingExists("Message.Shutdown")) {
+    Using<Message::Message>();
+
+    Sqrat::DerivedClass<Message::Shutdown, Message::Message> binding(
+        mVM, "Message.Shutdown");
+    Bind("Message.Shutdown", binding);
+  }
+
+  return *this;
+}
+}  // namespace libcomp

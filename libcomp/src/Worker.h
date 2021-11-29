@@ -62,9 +62,15 @@ class Worker {
 
   /**
    * Add a manager to process messages.
-   * @param manager A message manager
+   * @param manager A message manager.
    */
   void AddManager(const std::shared_ptr<Manager>& manager);
+
+  /**
+   * Remove a specific manager from the worker.
+   * @param manager Manager to remove.
+   */
+  void RemoveManager(const std::shared_ptr<Manager>& manager);
 
   /**
    * Remove all managers from the worker.

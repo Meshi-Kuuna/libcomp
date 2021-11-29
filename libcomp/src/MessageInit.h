@@ -53,6 +53,10 @@ class Init : public Message {
    */
   virtual ~Init();
 
+  Message* Clone() const override { return new Init(*this); }
+
+  void ExecuteScriptFunction(Sqrat::Function& func) const override;
+
   virtual MessageType GetType() const;
 
   virtual libcomp::String Dump() const override;

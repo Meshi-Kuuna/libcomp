@@ -53,8 +53,24 @@ class UUID {
 
   bool IsNull() const;
 
+  uint64_t GetTimeAndVersion() const { return mTimeAndVersion; }
+
+  uint64_t GetClockSequenceAndNode() const { return mClockSequenceAndNode; }
+
   bool operator==(const UUID& other) const;
   bool operator!=(const UUID& other) const;
+
+  int Compare(const UUID& other) const {
+    if (mTimeAndVersion == other.mTimeAndVersion &&
+        mClockSequenceAndNode == other.mClockSequenceAndNode) {
+      return 0;
+    } else if (mTimeAndVersion > other.mTimeAndVersion ||
+               mClockSequenceAndNode > other.mClockSequenceAndNode) {
+      return 1;
+    } else {
+      return -1;
+    }
+  }
 
  protected:
   uint64_t mTimeAndVersion;

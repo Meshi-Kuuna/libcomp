@@ -57,6 +57,7 @@ SET(${PROJECT_NAME}_SRCS
     src/BaseScriptEngine.cpp
     src/BaseServer.cpp
     src/Compress.cpp
+    src/ConnectionMessage.cpp
     src/Convert.cpp
     src/Crypto.cpp
     src/CString.cpp
@@ -80,12 +81,14 @@ SET(${PROJECT_NAME}_SRCS
     src/ManagerPacket.cpp
     #src/MemoryFile.cpp
     src/MemoryManager.cpp
+    src/Message.cpp
     src/MessageConnectionClosed.cpp
     src/MessageEncrypted.cpp
     src/MessageInit.cpp
     src/MessagePacket.cpp
     src/MessagePong.cpp
     src/MessageShutdown.cpp
+    src/MessageTick.cpp
     src/MessageTimeout.cpp
     src/Mutex.cpp
     src/Object.cpp

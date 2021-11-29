@@ -29,6 +29,13 @@
 
 // libcomp Includes
 #include "CString.h"
+#include "EnumUtils.h"
+
+namespace Sqrat {
+
+class Function;
+
+}  // namespace Sqrat
 
 namespace libcomp {
 
@@ -60,6 +67,28 @@ class Message {
    * @return The message's type.
    */
   virtual MessageType GetType() const = 0;
+
+  /**
+   * Clone the message.
+   * @return Clone of the message.
+   */
+  virtual Message* Clone() const = 0;
+
+  /**
+   * Execute the script function and pass it a clone of the message.
+   * @param func Script function to pass a clone of the message.
+   * @note Execution needs to happen from this method or the Execute<>()
+   * template will tell squirrel the wrong type for the class (the base type).
+   * @note Function should not return a value and only takes the one argument -
+   * the message.
+   */
+  virtual void ExecuteScriptFunction(Sqrat::Function& func) const = 0;
+
+  /**
+   * Get the message's raw type.
+   * @return The message's raw type.
+   */
+  int GetRawType() const { return to_underlying(GetType()); }
 
   /**
    * Dump the message for logging.

@@ -137,6 +137,16 @@ class BaseScriptEngine : public std::enable_shared_from_this<BaseScriptEngine> {
       const std::function<bool(BaseScriptEngine&, const std::string& module)>&
           func);
 
+  /**
+   * Create or get a namespace.
+   * @param name Namespace to create or get.
+   * @returns Namespace specified.
+   */
+  std::shared_ptr<Sqrat::TableBase> CreateNamespace(
+      const libcomp::String& name) {
+    return CreateNamespace(name.Split("."));
+  }
+
  protected:
   /**
    * Utility function to complete the binding of an object via @ref
@@ -146,9 +156,28 @@ class BaseScriptEngine : public std::enable_shared_from_this<BaseScriptEngine> {
    */
   template <class T, class A>
   void Bind(const std::string& name, Sqrat::Class<T, A>& binding) {
+    std::string baseName;
     mBindings.insert(name);
-    Sqrat::RootTable(mVM).Bind(name.c_str(), binding);
+    BindNamespace(name, baseName)->Bind(baseName.c_str(), binding);
   }
+
+  /**
+   * Create or get a namespace.
+   * @param names Namespace components (split by .) to create or get.
+   * @returns Namespace specified.
+   */
+  std::shared_ptr<Sqrat::TableBase> CreateNamespace(
+      const std::list<libcomp::String>& names);
+
+  /**
+   * Create the namespace if needed and return the table for the namespace.
+   * @param name Full name of the class including the namespace.
+   * @param baseName Base name of the class without the namespace.
+   * @returns Table for the namespace.
+   * @note Nested namespaces are allowed (A.B.C)
+   */
+  std::shared_ptr<Sqrat::TableBase> BindNamespace(const libcomp::String& name,
+                                                  std::string& baseName);
 
   /**
    * Check if an object has already been bound.

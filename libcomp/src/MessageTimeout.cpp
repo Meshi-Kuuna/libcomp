@@ -26,6 +26,8 @@
 
 #include "MessageTimeout.h"
 
+#include "BaseScriptEngine.h"
+
 using namespace libcomp;
 
 Message::Timeout::Timeout() {}
@@ -37,3 +39,23 @@ Message::MessageType Message::Timeout::GetType() const {
 }
 
 libcomp::String Message::Timeout::Dump() const { return "Message: Timeout"; }
+
+void libcomp::Message::Timeout::ExecuteScriptFunction(
+    Sqrat::Function &func) const {
+  func.Execute(std::make_shared<libcomp::Message::Timeout>(*this));
+}
+
+namespace libcomp {
+template <>
+BaseScriptEngine &BaseScriptEngine::Using<Message::Timeout>() {
+  if (!BindingExists("Message.Timeout")) {
+    Using<Message::Message>();
+
+    Sqrat::DerivedClass<Message::Timeout, Message::Message> binding(
+        mVM, "Message.Timeout");
+    Bind("Message.Timeout", binding);
+  }
+
+  return *this;
+}
+}  // namespace libcomp

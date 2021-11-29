@@ -50,6 +50,10 @@ class Tick : public Message {
    */
   ~Tick() {}
 
+  Message* Clone() const override { return new Tick(*this); }
+
+  void ExecuteScriptFunction(Sqrat::Function& func) const override;
+
   virtual MessageType GetType() const {
     return MessageType::MESSAGE_TYPE_SYSTEM;
   }

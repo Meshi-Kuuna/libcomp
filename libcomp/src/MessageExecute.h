@@ -78,6 +78,15 @@ class ExecuteImpl : public Execute {
    */
   virtual ~ExecuteImpl() {}
 
+  Message* Clone() const override {
+    return new ExecuteImpl<Function...>(*this);
+  }
+
+  void ExecuteScriptFunction(Sqrat::Function& func) const override {
+    // This message is not bound to the script engine.
+    (void)func;
+  }
+
   virtual MessageType GetType() const {
     return MessageType::MESSAGE_TYPE_SYSTEM;
   }

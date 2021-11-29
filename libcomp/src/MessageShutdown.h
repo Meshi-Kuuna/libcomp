@@ -53,6 +53,10 @@ class Shutdown : public Message {
    */
   virtual ~Shutdown();
 
+  Message* Clone() const override { return new Shutdown(*this); }
+
+  void ExecuteScriptFunction(Sqrat::Function& func) const override;
+
   virtual MessageType GetType() const;
 
   virtual libcomp::String Dump() const override;

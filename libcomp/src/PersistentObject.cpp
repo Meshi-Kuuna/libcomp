@@ -300,7 +300,11 @@ BaseScriptEngine& BaseScriptEngine::Using<libobjgen::UUID>() {
   if (!BindingExists("UUID")) {
     Sqrat::Class<libobjgen::UUID> binding(mVM, "UUID");
     binding.Func("ToString", &libobjgen::UUID::ToString)
-        .Func("IsNull", &libobjgen::UUID::IsNull);  // Last call to binding
+        .Func("_tostring", &libobjgen::UUID::ToString)
+        .Func("_cmp", &libobjgen::UUID::Compare)
+        .Func("IsNull", &libobjgen::UUID::IsNull)
+        .StaticFunc("Random",
+                    &libobjgen::UUID::Random);  // Last call to binding
 
     Bind<libobjgen::UUID>("UUID", binding);
   }

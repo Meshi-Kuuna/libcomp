@@ -27,6 +27,7 @@
 #include "MessageConnectionClosed.h"
 
 // libcomp Includes
+#include "BaseScriptEngine.h"
 #include "TcpConnection.h"
 
 using namespace libcomp;
@@ -55,3 +56,26 @@ libcomp::String Message::ConnectionClosed::Dump() const {
     return "Message: Connection Closed";
   }
 }
+
+void libcomp::Message::ConnectionClosed::ExecuteScriptFunction(
+    Sqrat::Function &func) const {
+  func.Execute(std::make_shared<libcomp::Message::ConnectionClosed>(*this));
+}
+
+namespace libcomp {
+template <>
+BaseScriptEngine &BaseScriptEngine::Using<Message::ConnectionClosed>() {
+  if (!BindingExists("Message.ConnectionClosed")) {
+    Using<Message::ConnectionMessage>();
+
+    Sqrat::DerivedClass<Message::ConnectionClosed, Message::ConnectionMessage>
+        binding(mVM, "Message.ConnectionClosed");
+    Bind("Message.ConnectionClosed", binding);
+
+    binding.Func("GetConnection", &Message::ConnectionClosed::GetConnection)
+        .Prop("Connection", &Message::ConnectionClosed::GetConnection);
+  }
+
+  return *this;
+}
+}  // namespace libcomp

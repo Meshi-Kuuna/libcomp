@@ -41,6 +41,10 @@ class ConnectionClosed : public ConnectionMessage {
   ConnectionClosed(std::shared_ptr<TcpConnection> connection);
   virtual ~ConnectionClosed();
 
+  Message* Clone() const override { return new ConnectionClosed(*this); }
+
+  void ExecuteScriptFunction(Sqrat::Function& func) const override;
+
   std::shared_ptr<TcpConnection> GetConnection() const;
 
   virtual ConnectionMessageType GetConnectionMessageType() const;

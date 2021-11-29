@@ -49,6 +49,20 @@ void Worker::AddManager(const std::shared_ptr<Manager>& manager) {
   }
 }
 
+void Worker::RemoveManager(const std::shared_ptr<Manager>& manager) {
+  for (auto messageType : manager->GetSupportedTypes()) {
+    auto itpair = mManagers.equal_range(messageType);
+
+    for (auto it = itpair.first; it != itpair.second;) {
+      if (it->second == manager) {
+        it = mManagers.erase(it);
+      } else {
+        ++it;
+      }
+    }
+  }
+}
+
 void Worker::RemoveAllManagers() { mManagers.clear(); }
 
 void Worker::Start(const libcomp::String& name, bool blocking) {

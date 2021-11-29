@@ -27,6 +27,7 @@
 #include "MessageEncrypted.h"
 
 // libcomp Includes
+#include "BaseScriptEngine.h"
 #include "TcpConnection.h"
 
 using namespace libcomp;
@@ -53,3 +54,26 @@ libcomp::String Message::Encrypted::Dump() const {
     return "Message: Connection Encrypted";
   }
 }
+
+void libcomp::Message::Encrypted::ExecuteScriptFunction(
+    Sqrat::Function& func) const {
+  func.Execute(std::make_shared<libcomp::Message::Encrypted>(*this));
+}
+
+namespace libcomp {
+template <>
+BaseScriptEngine& BaseScriptEngine::Using<Message::Encrypted>() {
+  if (!BindingExists("Message.Encrypted")) {
+    Using<Message::ConnectionMessage>();
+
+    Sqrat::DerivedClass<Message::Encrypted, Message::ConnectionMessage> binding(
+        mVM, "Message.Encrypted");
+    Bind("Message.Encrypted", binding);
+
+    binding.Func("GetConnection", &Message::Encrypted::GetConnection)
+        .Prop("Connection", &Message::Encrypted::GetConnection);
+  }
+
+  return *this;
+}
+}  // namespace libcomp

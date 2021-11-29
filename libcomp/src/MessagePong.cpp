@@ -26,6 +26,8 @@
 
 #include "MessagePong.h"
 
+#include "BaseScriptEngine.h"
+
 using namespace libcomp;
 
 Message::Pong::Pong() {}
@@ -37,3 +39,23 @@ Message::MessageType Message::Pong::GetType() const {
 }
 
 libcomp::String Message::Pong::Dump() const { return "Message: Pong"; }
+
+void libcomp::Message::Pong::ExecuteScriptFunction(
+    Sqrat::Function &func) const {
+  func.Execute(std::make_shared<libcomp::Message::Pong>(*this));
+}
+
+namespace libcomp {
+template <>
+BaseScriptEngine &BaseScriptEngine::Using<Message::Pong>() {
+  if (!BindingExists("Message.Pong")) {
+    Using<Message::Message>();
+
+    Sqrat::DerivedClass<Message::Pong, Message::Message> binding(
+        mVM, "Message.Pong");
+    Bind("Message.Pong", binding);
+  }
+
+  return *this;
+}
+}  // namespace libcomp

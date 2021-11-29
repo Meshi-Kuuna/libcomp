@@ -26,6 +26,8 @@
 
 #include "MessageInit.h"
 
+#include "BaseScriptEngine.h"
+
 using namespace libcomp;
 
 Message::Init::Init() {}
@@ -37,3 +39,23 @@ Message::MessageType Message::Init::GetType() const {
 }
 
 libcomp::String Message::Init::Dump() const { return "Message: Init"; }
+
+void libcomp::Message::Init::ExecuteScriptFunction(
+    Sqrat::Function &func) const {
+  func.Execute(std::make_shared<libcomp::Message::Init>(*this));
+}
+
+namespace libcomp {
+template <>
+BaseScriptEngine &BaseScriptEngine::Using<Message::Init>() {
+  if (!BindingExists("Message.Init")) {
+    Using<Message::Message>();
+
+    Sqrat::DerivedClass<Message::Init, Message::Message> binding(
+        mVM, "Message.Init");
+    Bind("Message.Init", binding);
+  }
+
+  return *this;
+}
+}  // namespace libcomp

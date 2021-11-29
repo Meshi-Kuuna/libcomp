@@ -352,4 +352,36 @@ void BaseScriptEngine::InitializeBuiltins() {
   InitializeOtherBuiltins();
 }
 
+std::shared_ptr<Sqrat::TableBase> BaseScriptEngine::CreateNamespace(
+    const std::list<libcomp::String>& names) {
+  std::shared_ptr<Sqrat::TableBase> tbl =
+      std::make_shared<Sqrat::RootTable>(mVM);
+
+  for (auto name : names) {
+    auto nextTbl = tbl->GetValue<Sqrat::Table>(name.C());
+
+    if (nextTbl) {
+      tbl = nextTbl;
+    } else {
+      // GetValue sets an error in the VM that must be cleared.
+      Sqrat::Error::Clear(mVM);
+
+      auto newTbl = std::make_shared<Sqrat::Table>(mVM);
+      tbl->SetValue(name.C(), newTbl);
+      tbl = newTbl;
+    }
+  }
+
+  return tbl;
+}
+
+std::shared_ptr<Sqrat::TableBase> BaseScriptEngine::BindNamespace(
+    const libcomp::String& name, std::string& baseName) {
+  auto namespaces = name.Split(".");
+  baseName = namespaces.back().ToUtf8();
+  namespaces.pop_back();
+
+  return CreateNamespace(namespaces);
+}
+
 #endif  // !EXOTIC_PLATFORM
