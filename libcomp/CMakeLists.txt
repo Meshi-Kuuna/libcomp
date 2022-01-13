@@ -212,6 +212,7 @@ SET(${PROJECT_NAME}_HDRS
     src/TcpServer.h
     #src/ThreadManager.h
     src/TimerManager.h
+    src/Utils.h
     src/WindowsService.h
     src/Worker.h
 
