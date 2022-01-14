@@ -57,11 +57,6 @@ libcomp::String Message::ConnectionClosed::Dump() const {
   }
 }
 
-void libcomp::Message::ConnectionClosed::ExecuteScriptFunction(
-    Sqrat::Function &func) const {
-  func.Execute(std::make_shared<libcomp::Message::ConnectionClosed>(*this));
-}
-
 namespace libcomp {
 template <>
 BaseScriptEngine &BaseScriptEngine::Using<Message::ConnectionClosed>() {

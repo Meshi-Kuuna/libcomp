@@ -67,11 +67,6 @@ libcomp::String Message::Packet::Dump() const {
   }
 }
 
-void libcomp::Message::Packet::ExecuteScriptFunction(
-    Sqrat::Function& func) const {
-  func.Execute(std::make_shared<libcomp::Message::Packet>(*this));
-}
-
 namespace libcomp {
 template <>
 BaseScriptEngine& BaseScriptEngine::Using<Message::Packet>() {

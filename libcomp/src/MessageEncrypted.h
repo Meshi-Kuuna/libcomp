@@ -58,8 +58,6 @@ class Encrypted : public ConnectionMessage {
 
   Message* Clone() const override { return new Encrypted(*this); }
 
-  void ExecuteScriptFunction(Sqrat::Function& func) const override;
-
   /**
    * Get the encrypted connection.
    * @return The encrypted connection

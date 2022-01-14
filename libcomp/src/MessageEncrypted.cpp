@@ -55,11 +55,6 @@ libcomp::String Message::Encrypted::Dump() const {
   }
 }
 
-void libcomp::Message::Encrypted::ExecuteScriptFunction(
-    Sqrat::Function& func) const {
-  func.Execute(std::make_shared<libcomp::Message::Encrypted>(*this));
-}
-
 namespace libcomp {
 template <>
 BaseScriptEngine& BaseScriptEngine::Using<Message::Encrypted>() {

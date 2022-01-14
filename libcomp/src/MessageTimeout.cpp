@@ -40,11 +40,6 @@ Message::MessageType Message::Timeout::GetType() const {
 
 libcomp::String Message::Timeout::Dump() const { return "Message: Timeout"; }
 
-void libcomp::Message::Timeout::ExecuteScriptFunction(
-    Sqrat::Function &func) const {
-  func.Execute(std::make_shared<libcomp::Message::Timeout>(*this));
-}
-
 namespace libcomp {
 template <>
 BaseScriptEngine &BaseScriptEngine::Using<Message::Timeout>() {

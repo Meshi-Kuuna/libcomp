@@ -40,11 +40,6 @@ Message::MessageType Message::Init::GetType() const {
 
 libcomp::String Message::Init::Dump() const { return "Message: Init"; }
 
-void libcomp::Message::Init::ExecuteScriptFunction(
-    Sqrat::Function &func) const {
-  func.Execute(std::make_shared<libcomp::Message::Init>(*this));
-}
-
 namespace libcomp {
 template <>
 BaseScriptEngine &BaseScriptEngine::Using<Message::Init>() {

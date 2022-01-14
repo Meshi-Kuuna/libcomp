@@ -55,8 +55,6 @@ class Timeout : public Message {
 
   Message* Clone() const override { return new Timeout(*this); }
 
-  void ExecuteScriptFunction(Sqrat::Function& func) const override;
-
   virtual MessageType GetType() const;
 
   virtual libcomp::String Dump() const override;

@@ -75,16 +75,6 @@ class Message {
   virtual Message* Clone() const = 0;
 
   /**
-   * Execute the script function and pass it a clone of the message.
-   * @param func Script function to pass a clone of the message.
-   * @note Execution needs to happen from this method or the Execute<>()
-   * template will tell squirrel the wrong type for the class (the base type).
-   * @note Function should not return a value and only takes the one argument -
-   * the message.
-   */
-  virtual void ExecuteScriptFunction(Sqrat::Function& func) const = 0;
-
-  /**
    * Get the message's raw type.
    * @return The message's raw type.
    */

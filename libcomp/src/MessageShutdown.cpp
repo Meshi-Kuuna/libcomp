@@ -40,11 +40,6 @@ Message::MessageType Message::Shutdown::GetType() const {
 
 libcomp::String Message::Shutdown::Dump() const { return "Message: Shutdown"; }
 
-void libcomp::Message::Shutdown::ExecuteScriptFunction(
-    Sqrat::Function &func) const {
-  func.Execute(std::make_shared<libcomp::Message::Shutdown>(*this));
-}
-
 namespace libcomp {
 template <>
 BaseScriptEngine &BaseScriptEngine::Using<Message::Shutdown>() {

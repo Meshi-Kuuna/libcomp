@@ -28,11 +28,6 @@
 
 #include "BaseScriptEngine.h"
 
-void libcomp::Message::Tick::ExecuteScriptFunction(
-    Sqrat::Function &func) const {
-  func.Execute(std::make_shared<libcomp::Message::Tick>(*this));
-}
-
 namespace libcomp {
 template <>
 BaseScriptEngine &BaseScriptEngine::Using<Message::Tick>() {

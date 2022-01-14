@@ -40,11 +40,6 @@ Message::MessageType Message::Pong::GetType() const {
 
 libcomp::String Message::Pong::Dump() const { return "Message: Pong"; }
 
-void libcomp::Message::Pong::ExecuteScriptFunction(
-    Sqrat::Function &func) const {
-  func.Execute(std::make_shared<libcomp::Message::Pong>(*this));
-}
-
 namespace libcomp {
 template <>
 BaseScriptEngine &BaseScriptEngine::Using<Message::Pong>() {

@@ -65,8 +65,6 @@ class Packet : public Message {
 
   Message* Clone() const override { return new Packet(*this); }
 
-  void ExecuteScriptFunction(Sqrat::Function& func) const override;
-
   /**
    * Get the received packet.
    * @return The received packet
