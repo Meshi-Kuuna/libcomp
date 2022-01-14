@@ -57,7 +57,7 @@ class DataSyncManager {
   /**
    * Clean up the DataSyncManager.
    */
-  ~DataSyncManager();
+  virtual ~DataSyncManager();
 
   /**
    * Register a new server connection and its sync types. Once registered, all
