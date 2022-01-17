@@ -40,7 +40,8 @@ class Child {
  public:
   explicit Child(const std::string& program,
                  const std::list<std::string>& arguments, int bootTimeout = 0,
-                 bool restart = false, bool displayOutput = false);
+                 bool restart = false, bool displayOutput = false,
+                 bool notifyStart = true, bool stopOnExit = false);
   ~Child();
 
   bool Start(bool notify = false);
@@ -48,6 +49,8 @@ class Child {
   std::string GetCommandLine() const;
   bool ShouldRestart() const;
   int GetBootTimeout() const;
+  bool GetNotifyStart() const;
+  bool GetStopOnExit() const;
 
   void Kill();
   void Interrupt();
@@ -59,6 +62,8 @@ class Child {
   int mBootTimeout;
   bool mRestart;
   bool mDisplayOutput;
+  bool mNotifyStart;
+  bool mStopOnExit;
 };
 
 }  // namespace libcomp

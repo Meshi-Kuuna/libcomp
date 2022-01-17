@@ -37,6 +37,7 @@ using namespace libcomp;
 DayCare::DayCare(bool printDetails, std::function<void()> onDetain)
     : mRunning(true),
       mPrintDetails(printDetails),
+      mReturnCode(EXIT_SUCCESS),
       mSpawnThread(new SpawnThread(this, printDetails, onDetain)),
       mWatchThread(new WatchThread(this)) {}
 
@@ -96,6 +97,32 @@ bool DayCare::LoadProcessDoc(tinyxml2::XMLDocument &doc) {
       }
     }
 
+    const char *szNotify = pProgram->Attribute("notify");
+
+    bool notifyStart = true;
+
+    if (nullptr != szNotify) {
+      std::string s(szNotify);
+      std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+
+      if (s != "true" && s != "on" && s != "1" && s != "yes") {
+        notifyStart = false;
+      }
+    }
+
+    const char *szStopOnExit = pProgram->Attribute("stop_on_exit");
+
+    bool stopOnExit = false;
+
+    if (nullptr != szStopOnExit) {
+      std::string s(szStopOnExit);
+      std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+
+      if (s == "true" || s == "on" || s == "1" || s == "yes") {
+        stopOnExit = true;
+      }
+    }
+
     tinyxml2::XMLElement *pPath = pProgram->FirstChildElement("path");
 
     if (nullptr == pPath) {
@@ -143,8 +170,9 @@ bool DayCare::LoadProcessDoc(tinyxml2::XMLDocument &doc) {
       }
     }
 
-    auto child = std::make_shared<Child>(szPath, arguments, timeout, restart,
-                                         displayOutput);
+    auto child =
+        std::make_shared<Child>(szPath, arguments, timeout, restart,
+                                displayOutput, notifyStart, stopOnExit);
     children.push_back(child);
 
     pProgram = pProgram->NextSiblingElement("program");
@@ -207,6 +235,20 @@ void DayCare::NotifyExit(pid_t pid, int status) {
     } else {
       mChildren.remove(child);
     }
+
+    if (child->GetStopOnExit()) {
+      mRunning = false;
+
+      // For some reason a status code like 256 will return 0 in
+      // Python and cause the test to pass.
+      mReturnCode = 0 == status ? 0 : -1;
+
+      for (auto _child : mChildren) {
+        _child->Interrupt();
+      }
+
+      mSpawnThread->RequestExit();
+    }
   }
 }
 
@@ -245,3 +287,5 @@ void DayCare::WaitForExit() {
   mSpawnThread->WaitForExit();
   mWatchThread->WaitForExit();
 }
+
+int DayCare::GetReturnCode() const { return mReturnCode; }

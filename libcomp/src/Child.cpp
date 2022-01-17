@@ -82,13 +82,16 @@ static pid_t CreateProcess(const std::string& program,
 
 Child::Child(const std::string& program,
              const std::list<std::string>& arguments, int bootTimeout,
-             bool restart, bool displayOutput)
+             bool restart, bool displayOutput, bool notifyStart,
+             bool stopOnExit)
     : mProgram(program),
       mArguments(arguments),
       mPID(0),
       mBootTimeout(bootTimeout),
       mRestart(restart),
-      mDisplayOutput(displayOutput) {}
+      mDisplayOutput(displayOutput),
+      mNotifyStart(notifyStart),
+      mStopOnExit(stopOnExit) {}
 
 Child::~Child() {
   if (0 != mPID) {
@@ -149,3 +152,7 @@ pid_t Child::GetPID() const { return mPID; }
 bool Child::ShouldRestart() const { return mRestart; }
 
 int Child::GetBootTimeout() const { return mBootTimeout; }
+
+bool Child::GetNotifyStart() const { return mNotifyStart; }
+
+bool Child::GetStopOnExit() const { return mStopOnExit; }

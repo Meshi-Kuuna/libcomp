@@ -59,6 +59,8 @@ class DayCare {
   void NotifyExit(pid_t pid, int status);
   void CloseDoors(bool kill = false);
 
+  int GetReturnCode() const;
+
   std::list<std::shared_ptr<Child>> OrderChildren(
       const std::list<std::shared_ptr<Child>>& children);
 
@@ -67,6 +69,7 @@ class DayCare {
 
   bool mRunning;
   bool mPrintDetails;
+  int mReturnCode;
 
   SpawnThread* mSpawnThread;
   WatchThread* mWatchThread;

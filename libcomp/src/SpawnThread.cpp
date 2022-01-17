@@ -77,7 +77,7 @@ void SpawnThread::Run() {
       for (auto child : children) {
         int timeout = child->GetBootTimeout();
 
-        if (child->Start(true)) {
+        if (child->Start(child->GetNotifyStart())) {
           if (mPrintDetails) {
             printf("Started with PID %d: %s\n", child->GetPID(),
                    child->GetCommandLine().c_str());
