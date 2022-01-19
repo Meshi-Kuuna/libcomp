@@ -1156,14 +1156,28 @@ bool DatabaseMariaDB::ConnectToDatabase(MYSQL*& connection,
   auto username = config->GetUsername();
   auto password = config->GetPassword();
 
+  if (hostIP.IsEmpty()) {
+    hostIP = "localhost";
+  }
+
   connection = mysql_real_connect(
-      connection, (!hostIP.IsEmpty() ? hostIP.C() : "localhost"),
-      (!username.IsEmpty() ? username.C() : NULL),
-      (!password.IsEmpty() ? password.C() : NULL),
-      (!databaseName.IsEmpty() ? databaseName.C() : NULL), config->GetPort(),
-      NULL, 0);
+      connection, hostIP.C(), username.IsEmpty() ? NULL : username.C(),
+      password.IsEmpty() ? NULL : password.C(),
+      databaseName.IsEmpty() ? NULL : databaseName.C(), config->GetPort(), NULL,
+      0);
   if (connection == NULL) {
-    LogDatabaseErrorMsg("Failed to open database connection\n");
+    LogDatabaseError([&]() {
+      return String("Failed to open database connection: %1\n")
+          .Arg(GetLastError());
+    });
+
+    LogDatabaseError([&]() {
+      return String("Host: %1:%2\n").Arg(hostIP).Arg(config->GetPort());
+    });
+    LogDatabaseError(
+        [&]() { return String("Username: %1:%2\n").Arg(username); });
+    LogDatabaseError(
+        [&]() { return String("Database: %1:%2\n").Arg(databaseName); });
 
     Close(connection);
 
