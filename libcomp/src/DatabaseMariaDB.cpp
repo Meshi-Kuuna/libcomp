@@ -1167,17 +1167,17 @@ bool DatabaseMariaDB::ConnectToDatabase(MYSQL*& connection,
       0);
   if (connection == NULL) {
     LogDatabaseError([&]() {
-      return String("Failed to open database connection: %1\n")
-          .Arg(GetLastError());
+      return String("Failed to open database connection with error %1: %2\n")
+          .Arg(mysql_errno(connection))
+          .Arg(GetLastError(connection));
     });
 
     LogDatabaseError([&]() {
       return String("Host: %1:%2\n").Arg(hostIP).Arg(config->GetPort());
     });
+    LogDatabaseError([&]() { return String("Username: %1\n").Arg(username); });
     LogDatabaseError(
-        [&]() { return String("Username: %1:%2\n").Arg(username); });
-    LogDatabaseError(
-        [&]() { return String("Database: %1:%2\n").Arg(databaseName); });
+        [&]() { return String("Database: %1\n").Arg(databaseName); });
 
     Close(connection);
 
