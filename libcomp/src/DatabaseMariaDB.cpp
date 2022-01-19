@@ -72,7 +72,7 @@ bool DatabaseMariaDB::Close() {
 }
 
 bool DatabaseMariaDB::Close(MYSQL*& connection) {
-  if (nullptr != connection && nullptr != connection) {
+  if (nullptr != connection) {
     mysql_close(connection);
 
     LogDatabaseDebug([&]() {
@@ -1160,12 +1160,12 @@ bool DatabaseMariaDB::ConnectToDatabase(MYSQL*& connection,
     hostIP = "localhost";
   }
 
-  connection = mysql_real_connect(
+  auto handle = mysql_real_connect(
       connection, hostIP.C(), username.IsEmpty() ? NULL : username.C(),
       password.IsEmpty() ? NULL : password.C(),
       databaseName.IsEmpty() ? NULL : databaseName.C(), config->GetPort(), NULL,
       0);
-  if (connection == NULL) {
+  if (handle == NULL) {
     LogDatabaseError([&]() {
       return String("Failed to open database connection with error %1: %2\n")
           .Arg(mysql_errno(connection))
@@ -1182,6 +1182,8 @@ bool DatabaseMariaDB::ConnectToDatabase(MYSQL*& connection,
     Close(connection);
 
     return false;
+  } else {
+    connection = handle;
   }
 
   // Set the encoding of the connection.
